@@ -18,25 +18,34 @@ public class Usuarios implements Serializable {
 	private EntityManager manager;
 
 	@Transactional
-	public void cadastrar(Usuario usuario) {
-		manager.persist(usuario);
+	public void inserir(Usuario entity) {
+		manager.persist(entity);
 	}
 
-	public Usuario gravar(Usuario usuario) {
-		return manager.merge(usuario);
+	@Transactional
+	public Usuario alterar(Usuario entity) {
+		return manager.merge(entity);
 	}
 
-	public List<Usuario> pesquisarTodosUsuarios() {
-		return manager.createQuery("from Usuario order by nome", Usuario.class)
+	@Transactional
+	public void remove(Long id) {
+		manager.remove(find(id));
+	}
+
+	public Usuario find(Long id) {
+		return manager.find(Usuario.class, id);
+	}
+
+	public List<Usuario> findAll() {
+		return manager.createNamedQuery("Usuario.findAll", Usuario.class)
 				.getResultList();
 	}
 
 	public Usuario pesquisarPorEmail(String email) {
 		try {
 			return manager
-					.createQuery("from Usuario where email = :email",
-							Usuario.class).setParameter("email", email)
-					.getSingleResult();
+					.createNamedQuery("Usuario.findByEmail", Usuario.class)
+					.setParameter("email", email).getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -45,10 +54,9 @@ public class Usuarios implements Serializable {
 	public Usuario pesquisarPorEmailSenha(String email, String senha) {
 		try {
 			return manager
-					.createQuery(
-							"from Usuario where email = :email and senha = :senha",
-							Usuario.class).setParameter("email", email)
-					.setParameter("senha", senha).getSingleResult();
+					.createNamedQuery("Usuario.findByLogin", Usuario.class)
+					.setParameter("email", email).setParameter("senha", senha)
+					.getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		}

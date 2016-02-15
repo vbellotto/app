@@ -1,115 +1,123 @@
 package br.com.turismo.webservices.restful;
 
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
-import org.codehaus.jackson.map.ObjectMapper;
-
-import br.com.turismo.core.model.Usuario;
-import br.com.turismo.core.service.UsuariosService;
-
-@Path("/usuario")
 @RequestScoped
-public class TurismoRestFul {
+public class TurismoRestFul extends TurismoRestFulAbstract {
 
-	@Inject
-	private UsuariosService cadastroUsuario;
-
-	ObjectMapper mapper = new ObjectMapper();
-
-	@GET
-	@Path("/controleacesso/{token}/{email}/{senha}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response controleAcesso(@PathParam("token") String token,
-			@PathParam("email") String email, @PathParam("senha") String senha) {
-		Response response = null;
-		try {
-			Usuario usuario = cadastroUsuario.controleacesso(email, senha);
-			if (usuario != null) {
-				response = Response.ok()
-						.entity(mapper.writeValueAsString(usuario)).build();
-			} else {
-				response = Response.status(Status.NOT_FOUND).build();
-			}
-		} catch (Exception e) {
-			response = Response.status(Status.BAD_REQUEST).build();
-		}
-		return response;
+	@Override
+	public Response aplicacao(String token) {
+		return service.aplicacao(token);
 	}
 
-	//@PUT
-	@GET
-	@Path("/cadastrar/{token}/{nome}/{email}/{senha}/{alias}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response cadastrar(@PathParam("token") String token,
-			@PathParam("nome") String nome, @PathParam("email") String email,
-			@PathParam("senha") String senha, @PathParam("alias") String alias) {
-		Response response = null;
-		try {
-			Usuario usuario = cadastroUsuario.cadastrar(new Usuario(nome,
-					email, senha, alias));
-			if (usuario != null) {
-				response = Response.ok()
-						.entity(mapper.writeValueAsString(usuario)).build();
-			} else {
-				response = Response.status(Status.PRECONDITION_FAILED).build();
-			}
-		} catch (Exception e) {
-			response = Response.status(Status.BAD_REQUEST).build();
-		}
-		return response;
+	@Override
+	public Response controleAcesso(String token, String email, String senha) {
+		return service.controleAcesso(token, email, senha);
 	}
 
-	//@POST
-	@GET
-	@Path("/atualizar/{token}/{nome}/{email}/{senha}/{alias}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response atualizar(@PathParam("token") String token,
-			@PathParam("nome") String nome, @PathParam("email") String email,
-			@PathParam("senha") String senha, @PathParam("alias") String alias) {
-		Response response = null;
-		try {
-			response = Response
-					.ok()
-					.entity(mapper.writeValueAsString(new Usuario(nome, email,
-							senha, alias))).build();
-		} catch (Exception e) {
-			response = Response.status(Status.BAD_REQUEST).build();
-		}
-		return response;
+	@Override
+	public Response inserirUsuario(String token, String nome, String email,
+			String senha, String alias) {
+		return service.insertUsuario(token, nome, email, senha, alias);
 	}
-	
-	//@DELETE
-	@GET
-	@Path("/apagar/{token}/{nome}/{email}/{senha}/{alias}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response apagar(@PathParam("token") String token,
-			@PathParam("nome") String nome, @PathParam("email") String email,
-			@PathParam("senha") String senha, @PathParam("alias") String alias) {
-		Response response = null;
-		try {
-			response = Response
-					.ok()
-					.entity(mapper.writeValueAsString(new Usuario(nome, email,
-							senha, alias))).build();
-		} catch (Exception e) {
-			response = Response.status(Status.BAD_REQUEST).build();
-		}
-		return response;
+
+	@Override
+	public Response alterarUsuario(String token, Long id, String nome,
+			String email, String senha, String alias) {
+		return service.updateUsuario(token, id, nome, email, senha, alias);
 	}
+
+	@Override
+	public Response removerUsuario(String token, Long id) {
+		return service.deleteUsuario(token, id);
+	}
+
+	@Override
+	public Response buscarUsuario(String token, Long id) {
+		return service.findUsuario(token, id);
+	}
+
+	@Override
+	public Response buscarTodosUsuarios(String token) {
+		return service.findAllUsuario(token);
+	}
+
+	@Override
+	public Response inserirAvaliacao(String token, String descricao) {
+		return service.insertAvaliacao(token, descricao);
+	}
+
+	@Override
+	public Response alterarAvaliacao(String token, Long id, String descricao) {
+		return service.updateAvaliacao(token, id, descricao);
+	}
+
+	@Override
+	public Response removerAvaliacao(String token, Long id) {
+		return service.deleteAvaliacao(token, id);
+	}
+
+	@Override
+	public Response buscarAvaliacao(String token, Long id) {
+		return service.findAvaliacao(token, id);
+	}
+
+	@Override
+	public Response buscarTodasAvaliacoes(String token) {
+		return service.findAllAvaliacao(token);
+	}
+
+	@Override
+	public Response inserirTipoHospedagem(String token, String descricao) {
+		return service.insertTipoHospedagem(token, descricao);
+	}
+
+	@Override
+	public Response alterarTipoHospedagem(String token, Integer id,
+			String descricao) {
+		return service.updateTipoHospedagem(token, id, descricao);
+	}
+
+	@Override
+	public Response removerTipoHospedagem(String token, Integer id) {
+		return service.deleteTipoHospedagem(token, id);
+	}
+
+	@Override
+	public Response buscarTipoHospedagem(String token, Integer id) {
+		return service.findTipoHospedagem(token, id);
+	}
+
+	@Override
+	public Response buscarTodosTiposHospedagem(String token) {
+		return service.findAllTipoHospedagem(token);
+	}
+
+	@Override
+	public Response inserirTipoTransporte(String token, String descricao) {
+		return service.insertTipoTransporte(token, descricao);
+	}
+
+	@Override
+	public Response alterarTipoTransporte(String token, Integer id,
+			String descricao) {
+		return service.updateTipoTransporte(token, id, descricao);
+	}
+
+	@Override
+	public Response removerTipoTransporte(String token, Integer id) {
+		return service.deleteTipoTransporte(token, id);
+	}
+
+	@Override
+	public Response buscarTipoTransporte(String token, Integer id) {
+		return service.findTipoTransporte(token, id);
+	}
+
+	@Override
+	public Response buscarTodosTiposTransporte(String token) {
+		return service.findAllTipoTransporte(token);
+	}
+
 }

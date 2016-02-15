@@ -7,10 +7,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "usuario")
+@NamedQueries({
+		@NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u order by u.nome"),
+		@NamedQuery(name = "Usuario.findById", query = "SELECT u FROM Usuario u WHERE u.id = :id"),
+		@NamedQuery(name = "Usuario.findByEmail", query = "SELECT u FROM Usuario u WHERE u.email = :email"),
+		@NamedQuery(name = "Usuario.findByLogin", query = "SELECT u FROM Usuario u WHERE u.email = :email and u.senha = :senha"),
+		@NamedQuery(name = "Usuario.findByAlias", query = "SELECT u FROM Usuario u WHERE u.alias = :alias"),
+		@NamedQuery(name = "Usuario.findByNome", query = "SELECT u FROM Usuario u WHERE u.nome = :nome") })
 public class Usuario implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -40,7 +49,16 @@ public class Usuario implements Serializable {
 		this.senha = senha;
 		this.alias = alias;
 	}
-	
+
+	public Usuario(Long id, String nome, String email, String senha,
+			String alias) {
+		this.id = id;
+		this.nome = nome;
+		this.email = email;
+		this.senha = senha;
+		this.alias = alias;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -105,5 +123,5 @@ public class Usuario implements Serializable {
 			return false;
 		return true;
 	}
-	
+
 }

@@ -18,7 +18,7 @@ public class UsuariosService implements Serializable {
 	public Usuario controleacesso(String email, String senha) {
 		return usuarios.pesquisarPorEmailSenha(email, senha);
 	}
-	
+
 	@Transactional
 	public Usuario cadastrar(Usuario usuario) {
 		Usuario usuarioExistente = usuarios.pesquisarPorEmail(usuario
@@ -29,7 +29,7 @@ public class UsuariosService implements Serializable {
 					"Já existe um usuario com o email informado.");
 		}
 
-		return usuarios.gravar(usuario);
+		return usuarios.alterar(usuario);
 	}
 
 }
